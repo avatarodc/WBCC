@@ -3,13 +3,32 @@ $active = "red";
 ?>
 <!-- ======= Avantages Section ======= -->
 <div class="section-title mb-0">
-    <h2><button onclick="document.location.href='<?= URLROOT ?>/GestionInterne/indexProjet'"><i
-                class="fas fa-fw fa-arrow-left" style="color: #c00000"></i></button> <span><i
-                class="fa fa-regular fa-folder-open" style="color: #c00000"></i></span> gestion projet</h2>
+    <div class="row">
+        <div class="col-md-6">
+        <h2><button onclick="document.location.href='<?= URLROOT ?>/GestionInterne/indexProjet'"><i
+        class="fas fa-fw fa-arrow-left" style="color: #c00000"></i></button> <span><i
+        class="fa fa-regular fa-folder-open" style="color: #c00000"></i></span> gestion projet</h2>
+        </div>
+        <div class="col-md-6 <?= ($projet) ? '' : 'hidden' ?>">
+            <div class="float-right mt-0 mb-3">
+                <a type="button" rel="tooltip" title="Exporter"
+                    class="btn btn btn-sm btn-red  ml-1" onclick="onclickExporter()">
+                    <i class="fas fa-print" style="color: #ffffff"></i>
+                    Exporter
+                </a>
+                <a type="button" rel="tooltip" title="PDF"
+                    href="<?= linkto('GestionInterne', 'parametrageSubvention') ?>"
+                    class="btn btn btn-sm btn-red  ml-1">
+                    <i class="fas fa-file-pdf" style="color: #ffffff"></i>
+                    Pdf
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="row mt-0">
-    <div class="<?= $projet ? "col-md-6" : "col-md-12" ?> text-left m-0 p-0">
+    <div class="<?=  "col-md-12" ?> text-left m-0 p-0">
         <div class="row  mt-0 p-0">
             <fieldset>
                 <legend class=" text-center col-md-12 legend font-weight-bold mb-4 pt-2 shadow-02 font-weight-bold text-uppercase"><i
@@ -28,40 +47,47 @@ $active = "red";
                             value='<?= $_SESSION['connectedUser']->numeroContact ?>' hidden>
                         <input type="hidden" name="URLROOT" id="URLROOT" value="<?= URLROOT ?>">
                         <div class="row text-left mt-0">
-                            <div class="col-md-12 mb-1 mt-3">
-                                <div class="col-md-12">
-                                    <label class="font-weight-bold" for="">Nom du projet</label>
-                                </div>
-                                <input required type="text"
-                                    value="<?= ($projet) ?  "$projet->idProjet" : "0" ?>"
-                                    name="idProjet" class="shadow " id="idProjet" hidden>
-                                <div class="col-md-12">
+                            <div class="row w-100">
+                                <div class="col-md-6 mb-1 mt-3">
+                                    <div class="col-md-12">
+                                        <label class="font-weight-bold" for="">Nom du projet</label>
+                                    </div>
                                     <input required type="text"
-                                        value="<?= ($projet) ?  "$projet->nomProjet" : "" ?>"
-                                        name="nomProjet" class="form-control w-100 rounded outline-none shadow-01 border" id="nomProjet">
+                                        value="<?= ($projet) ?  "$projet->idProjet" : "0" ?>"
+                                        name="idProjet" class="shadow " id="idProjet" hidden>
+                                    <div class="col-md-12">
+                                        <input required type="text"
+                                            value="<?= ($projet) ?  "$projet->nomProjet" : "" ?>"
+                                            name="nomProjet" class="form-control rounded outline-none shadow-01 border" id="nomProjet">
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-1 mt-3">
+                                    <div class="col-md-12">
+                                        <label class="font-weight-bold fs-2" for="">Selectionner un Immeuble</label>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="d-flex flex-row px-3 rounded">
+                                            <input class="form-control rounded outline-none shadow-01 border w-75 mr-3 bg-white" id="adresse"
+                                                value="<?= $projet ? "$immeuble->adresse" : "" ?>" readonly/>
+                                            <button class="btn saveBtn flex space-x-3 text-white font-weight-bold w-50 px-0" onclick="onClickImmeuble()" type="button" rel="tooltip"
+                                                title="Ajouter" class="btn btn btn-sm  ml-1 text-white">
+                                                Charger une adresse
+                                                <i class="fa">&#xf021;</i>
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-12 mb-1 mt-4">
+                            <div class="w-100 my-5 pr-5 height-4">
                                 <div class="col-md-12">
                                     <label class="font-weight-bold" for="">Description du projet</label>
                                 </div>
-                                <div class="col-md-12">
+                                <div class="col-md-12 h-100">
                                     <textarea required type="text"
-                                        name="descriptionProjet" class="height-4 w-100 rounded outline-none shadow-01 border" id="descriptionProjet"><?= ($projet) ?  "$projet->descriptionProjet" : "" ?></textarea>
+                                        name="descriptionProjet" class="h-100 w-100 rounded outline-none shadow-01 border" id="descriptionProjet"><?= ($projet) ?  "$projet->descriptionProjet" : "" ?></textarea>
                                 </div>
                             </div>
-                            <div class="col-md-12 mb-1 mt-4">
-                                    <label class="font-weight-bold fs-2" for="">Selectionner un Immeuble</label>
-                                <div class="d-flex flex-row p-3 border shadow-02 rounded">
-                                    <input class="border form-control bg-light rounded outline-none shadow-sm border <?= $projet ? 'w-50 mr-3' : 'w-75 mr-5' ?>" id="adresse"
-                                        value="<?= $projet ? "$immeuble->adresse" : "" ?>" readonly/>
-                                    <button class="btn mb-4 saveBtn flex space-x-3 text-white font-weight-bold self-end" onclick="onClickImmeuble()" type="button" rel="tooltip"
-                                        title="Ajouter" class="btn btn btn-sm  ml-1 text-white">
-                                        Charger une adresse
-                                        <i class="fa">&#xf021;</i>
-                                    </button>
-                                </div>
-                            </div>
+                            
                         </div>
                         <div class="row mt-2 mb-0 p-0">
                             <div class="col text-center">
@@ -172,6 +198,20 @@ $active = "red";
     </div>
 </div>
 
+<!-- modal d'export -->
+<div class="modal fade" id="exporterModal" data-backdrop="static" tabindex="-1">
+    <div class="modal-dialog modal-lg bg-white">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <h3>Exporter</h3>
+                <div class="spinner-border text-danger" style="width: 5vw; height: 10vh;">
+                </div>
+                <br><br><br>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="<?= URLROOT ?>/public/assets/vendor/jquery/jquery.min.js"></script>
 <script type="text/javascript">
     const URLROOT = document.getElementById("URLROOT").value;
@@ -181,6 +221,49 @@ $active = "red";
     let idDocument = "";
     let typeDelete = "";
     let idCondition = "";
+
+    // function onclickExporter() {
+    //     var idProjet = document.getElementById("idProjet").value;
+    //     var idImmeuble = document.getElementById("idImmeuble").value;
+
+    //     $.ajax({
+    //         method : "POST",
+    //         url: URLROOT + "/public/json/projet.php?action=saveDocumentPDF",
+    //         data: {
+    //             idProjet: idProjet,
+    //             idImmeuble: idImmeuble
+    //         },
+    //         beforeSend: function() {
+    //             $('#exporterModal').modal('show');
+    //         },
+    //         success: function(response) {
+    //             console.log("exporter pdf");
+    //             console.log(response);
+    //             if (response == "1") {
+    //                 setTimeout(() => {
+    //                     $('#exporterModal').modal('hide');
+    //                 }, 1000);
+    //                 location.reload();
+    //             }
+    //         },
+    //         error: function(response) {
+    //             console.log("ERROR");
+    //             console.log(response);
+    //             setTimeout(() => {
+    //                 $('#exporterModal').modal('hide');
+    //             }, 1000);
+    //             $("#msgError").text(
+    //                 "Erreur d'enregistrement !");
+    //             $('#errorOperation').modal('show');
+    //         },
+    //         complete: function() {
+    //             setTimeout(() => {
+    //                 $('#exporterModal').modal('hide');
+    //             }, 1000);
+    //         },
+    //     });
+    // }
+
     function saveImmeuble() {
         var idImmeuble = document.getElementById('idImmeubleSelected').value;
         var adresse = document.getElementById('adresseImmeubleSelected').value;
@@ -618,8 +701,6 @@ $active = "red";
             }
         }
     }
-
-
 
     function deleteDocument() {
         var idSubvention = document.getElementById('idSubvention').value;
