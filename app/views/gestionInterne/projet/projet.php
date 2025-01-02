@@ -9,21 +9,7 @@ $active = "red";
         class="fas fa-fw fa-arrow-left" style="color: #c00000"></i></button> <span><i
         class="fa fa-regular fa-folder-open" style="color: #c00000"></i></span> gestion projet</h2>
         </div>
-        <div class="col-md-6 <?= ($projet) ? '' : 'hidden' ?>">
-            <div class="float-right mt-0 mb-3">
-                <a type="button" rel="tooltip" title="Exporter"
-                    class="btn btn btn-sm btn-red  ml-1" onclick="onclickExporter()">
-                    <i class="fas fa-print" style="color: #ffffff"></i>
-                    Exporter
-                </a>
-                <a type="button" rel="tooltip" title="PDF"
-                    href="<?= linkto('GestionInterne', 'parametrageSubvention') ?>"
-                    class="btn btn btn-sm btn-red  ml-1">
-                    <i class="fas fa-file-pdf" style="color: #ffffff"></i>
-                    Pdf
-                </a>
-            </div>
-        </div>
+
     </div>
 </div>
 
@@ -91,7 +77,7 @@ $active = "red";
                         </div>
                         <div class="row mt-2 mb-0 p-0">
                             <div class="col text-center">
-                                <input name="valider" class="btn btn btn-md text-white saveBtn mt-4 font-weight-bold px-3" type="submit" value="Enregistrer" />
+                                <input name="valider" class="btn btn btn-md text-white saveBtn mt-4 font-weight-bold px-3" type="submit" value="Enregistrer" onclick="onclickExporter()"/>
                             </div>
                         </div>
                     </div>
@@ -222,47 +208,47 @@ $active = "red";
     let typeDelete = "";
     let idCondition = "";
 
-    // function onclickExporter() {
-    //     var idProjet = document.getElementById("idProjet").value;
-    //     var idImmeuble = document.getElementById("idImmeuble").value;
-
-    //     $.ajax({
-    //         method : "POST",
-    //         url: URLROOT + "/public/json/projet.php?action=saveDocumentPDF",
-    //         data: {
-    //             idProjet: idProjet,
-    //             idImmeuble: idImmeuble
-    //         },
-    //         beforeSend: function() {
-    //             $('#exporterModal').modal('show');
-    //         },
-    //         success: function(response) {
-    //             console.log("exporter pdf");
-    //             console.log(response);
-    //             if (response == "1") {
-    //                 setTimeout(() => {
-    //                     $('#exporterModal').modal('hide');
-    //                 }, 1000);
-    //                 location.reload();
-    //             }
-    //         },
-    //         error: function(response) {
-    //             console.log("ERROR");
-    //             console.log(response);
-    //             setTimeout(() => {
-    //                 $('#exporterModal').modal('hide');
-    //             }, 1000);
-    //             $("#msgError").text(
-    //                 "Erreur d'enregistrement !");
-    //             $('#errorOperation').modal('show');
-    //         },
-    //         complete: function() {
-    //             setTimeout(() => {
-    //                 $('#exporterModal').modal('hide');
-    //             }, 1000);
-    //         },
-    //     });
-    // }
+    function onclickExporter() {
+        var idProjet = document.getElementById("idProjet").value;
+        var idImmeuble = document.getElementById("idImmeuble").value;
+        await saveProjet();
+        $.ajax({
+            method : "POST",
+            url: URLROOT + "/public/json/projet.php?action=saveDocumentPDF",
+            data: {
+                idProjet: idProjet,
+                idImmeuble: idImmeuble
+            },
+            beforeSend: function() {
+                $('#exporterModal').modal('show');
+            },
+            success: function(response) {
+                console.log("exporter pdf");
+                console.log(response);
+                if (response == "1") {
+                    setTimeout(() => {
+                        $('#exporterModal').modal('hide');
+                    }, 1000);
+                    location.reload();
+                }
+            },
+            error: function(response) {
+                console.log("ERROR");
+                console.log(response);
+                setTimeout(() => {
+                    $('#exporterModal').modal('hide');
+                }, 1000);
+                $("#msgError").text(
+                    "Erreur d'enregistrement !");
+                $('#errorOperation').modal('show');
+            },
+            complete: function() {
+                setTimeout(() => {
+                    $('#exporterModal').modal('hide');
+                }, 1000);
+            },
+        });
+    }
 
     function saveImmeuble() {
         var idImmeuble = document.getElementById('idImmeubleSelected').value;
@@ -296,453 +282,5 @@ $active = "red";
         console.log("Selected Immeuble ID: " + selectedId);
         console.log("Selected Immeuble adresse: " + selectedAdresse);
     }
-    // function selectRow(row, table) {
-    //         // Deselect all rows in both tables
-    //     $('#dataTable16 tbody tr').removeClass('selected-row');  // Deselect rows in the first table
-    //     $('#dataTable17 tbody tr').removeClass('selected-row');  // Deselect rows in the second table
 
-    //             // Check which table was clicked
-    //     if (table === 'immeuble') {
-    //         // Reset the idApp field if an Immeuble row is selected
-    //         $('#idApp').val(null);
-    //     } else if (table === 'lot') {
-    //         // Reset the idImmeuble field if a Lot row is selected
-    //         $('#idImmeuble').val(null);
-    //     }
-
-    //         // Remove the 'selected-row' class from all rows in the selected table
-    //         $(row).closest('table').find('tbody tr').removeClass('selected-row');
-
-    //     // // Remove the 'selected-row' class from all rows
-    //     // $('#dataTable16 tbody tr').removeClass('selected-row');
-
-    //     // Add the 'selected-row' class to the clicked row
-    //     $(row).addClass('selected-row');
-
-    //     // Get the idImmeuble from the clicked row's data-id attribute
-    //     var selectedId = $(row).data('id');
-
-    //     // Set the selected ID in the appropriate hidden input
-    //     if (table === 'immeuble') {
-    //         $('#idImmeuble').val(selectedId);
-    //     } else if (table === 'lot') {
-    //         $('#idApp').val(selectedId);
-    //     }
-
-    //     // Optional: Log the selected ID for debugging
-    //     console.log("Selected Immeuble ID: " + selectedId);
-    // }
-    //CONDITION
-    function onClickCondition(id, indexCritere) {
-        idCritere = id;
-        $("#titreCondition").text(
-            "Ajout d'une condition au critere N°" + indexCritere
-        );
-        $('#modalCondition').modal('show');
-    }
-
-    function onChangeCondition() {
-        let typeCondition = document.getElementById("typeCondition").value;
-        if (typeCondition == "Autre") {
-            document.getElementById("divAutreCondition").removeAttribute("hidden");
-        } else {
-            document.getElementById("divAutreCondition").setAttribute("hidden", "hidden");
-        }
-    }
-
-    function saveCondition() {
-        var idSubvention = document.getElementById('idSubvention').value;
-        var typeCondition = document.getElementById('typeCondition').value;
-        var operateurCondtion = document.getElementById('operateurCondtion').value;
-        var valeurCondition = document.getElementById('valeurCondition').value;
-        var autreTypeCondition = document.getElementById('autreTypeCondition').value;
-        if (typeCondition != "" && valeurCondition != "" && typeCondition != "" && (typeCondition != "Autre" || (
-                typeCondition ==
-                "Autre" && autreTypeCondition != ""))) {
-            console.log(typeCondition);
-
-            //SAVE
-            $.ajax({
-                url: '<?= URLROOT . "/public/json/critere.php?action=saveCondition" ?>',
-                method: 'POST',
-                data: JSON.stringify({
-                    idSubvention: idSubvention,
-                    idCritere: idCritere,
-                    idCondition: '0',
-                    idTypeConditionF: typeCondition,
-                    autreTypeCondition: autreTypeCondition,
-                    valeurCondition: valeurCondition,
-                    operateur: operateurCondtion.split(';')[1],
-                    signeOperateur: operateurCondtion.split(';')[0],
-                    idAuteur: '<?= $_SESSION["nomUser"]->idUtilisateur ?>'
-                }),
-                dataType: "JSON",
-                beforeSend: function() {
-                    $('#loadingModal').modal('show');
-                },
-                success: function(response) {
-                    console.log("save critere");
-                    console.log(response);
-                    if (response == "1") {
-                        setTimeout(() => {
-                            $('#modalCondition').modal('hide');
-                            $('#loadingModal').modal('hide');
-                        }, 1000);
-                        location.reload();
-                    }
-                },
-                error: function(response) {
-                    console.log("ERROR");
-                    console.log(response);
-                    setTimeout(() => {
-                        $('#loadingModal').modal('hide');
-                    }, 1000);
-                    $("#msgError").text(
-                        "Erreur d'enregistrement !");
-                    $('#errorOperation').modal('show');
-                },
-                complete: function() {
-                    setTimeout(() => {
-                        $('#loadingModal').modal('hide');
-                    }, 1000);
-                },
-            });
-
-        } else {
-            $("#msgError").text(
-                "Tous les champs sont obligatoires !");
-            $('#errorOperation').modal('show');
-        }
-    }
-
-    function deleteCondition() {
-        $.ajax({
-            url: '<?= URLROOT . "/public/json/critere.php?action=deleteConditionCritere" ?>',
-            method: 'POST',
-            data: JSON.stringify({
-                idCondition: idCondition,
-                idCritere: idCritere
-            }),
-            dataType: "JSON",
-            beforeSend: function() {
-                $('#loadingModal').modal('show');
-            },
-            success: function(response) {
-                // console.log("delete condition");
-                // console.log(response);
-                if (response == "1") {
-                    setTimeout(() => {
-                        $('#modalDelete').modal('hide');
-                        $('#loadingModal').modal('hide');
-                    }, 1000);
-
-                    location.reload();
-                }
-            },
-            error: function(response) {
-                console.log("ERROR");
-                console.log(response);
-                setTimeout(() => {
-                    $('#loadingModal').modal('hide');
-                }, 1000);
-                $("#msgError").text(
-                    "Erreur de suppression !");
-                $('#errorOperation').modal('show');
-            },
-            complete: function() {
-                setTimeout(() => {
-                    $('#loadingModal').modal('hide');
-                }, 1000);
-            },
-        });
-    }
-
-
-
-    //critere
-    function onClickCritere(id) {
-        if (id == 0) {
-            actionCritere = "add";
-            loadDataCritere(null, true);
-        } else {
-            actionCritere = "edit"
-            $.ajax({
-                type: "GET",
-                dataType: "JSON",
-                url: `${URLROOT}/public/json/critere.php?action=find&id=${id}`,
-                success: function(data) {
-                    console.log(data);
-                    if (data != undefined && data != null && data != "false") {
-                        loadDataCritere(data, false);
-                    } else {
-                        $("#msgError").text(
-                            "Impossible de charger les infos, contacter l'administrateur !"
-                        );
-                        $('#errorOperation').modal('show');
-                    }
-                },
-                error: function(jqXHR, error, errorThrown) {
-                    console.log("error");
-                    console.log(jqXHR.responseText);
-                    $("#msgError").text(
-                        "Impossible de charger les infos, contacter l'administrateur !"
-                    );
-                    $('#errorOperation').modal('show');
-                }
-            });
-        }
-    }
-
-    function loadDataCritere(data = null, readOnly = false) {
-        if (data != null) {
-            document.getElementById("idCritere").value = data['idCritere'];
-            document.getElementById("typeCondition").value = data['idTypeConditionF'];
-            document.getElementById("operateurCondtion").value = data['signeOperateur'] + ";" + data['operateur'];
-            document.getElementById("valeurCondition").value = data['valeur'];
-        } else {
-            document.getElementById("idCritere").value = "";
-            document.getElementById("typeCondition").value = "";
-            document.getElementById("operateurCondtion").value = "";
-            document.getElementById("valeurCondition").value = "";
-        }
-    }
-
-    function saveCritere(index) {
-        var idSubvention = document.getElementById('idSubvention').value;
-        var idCritere = document.getElementById('idCritere' + index).value;
-        var valeurCritere = document.getElementById('valeurCritere' + index).value;
-        var typeValeurCritere = document.getElementById('typeValeurCritere' + index).value;
-        if (valeurCritere != "" && typeValeurCritere != "") {
-            //SAVE
-            $.ajax({
-                url: '<?= URLROOT . "/public/json/critere.php?action=saveCritere" ?>',
-                method: 'POST',
-                data: JSON.stringify({
-                    idSubvention: idSubvention,
-                    idCritere: idCritere,
-                    valeurCritere: valeurCritere,
-                    typeValeurCritere: typeValeurCritere,
-                    idAuteur: '<?= $_SESSION["nomUser"]->idUtilisateur ?>'
-                }),
-                dataType: "JSON",
-                beforeSend: function() {
-                    $('#loadingModal').modal('show');
-                },
-                success: function(response) {
-                    console.log("save critere");
-                    console.log(response);
-                    if (response == "1") {
-                        setTimeout(() => {
-                            $('#modalCondition').modal('hide');
-                            $('#loadingModal').modal('hide');
-                        }, 1000);
-                        location.reload();
-                    }
-                },
-                error: function(response) {
-                    console.log("ERROR");
-                    console.log(response);
-                    setTimeout(() => {
-                        $('#loadingModal').modal('hide');
-                    }, 1000);
-                    $("#msgError").text(
-                        "Erreur d'enregistrement !");
-                    $('#errorOperation').modal('show');
-                },
-                complete: function() {
-                    setTimeout(() => {
-                        $('#loadingModal').modal('hide');
-                    }, 1000);
-                },
-            });
-        } else {
-            $("#msgError").text(
-                "Tous les champs sont obligatoires !");
-            $('#errorOperation').modal('show');
-        }
-    }
-
-    function deleteCritere() {
-        var idSubvention = document.getElementById('idSubvention').value;
-        $.ajax({
-            url: '<?= URLROOT . "/public/json/critere.php?action=deleteCritereSubvention" ?>',
-            method: 'POST',
-            data: JSON.stringify({
-                idSubvention: idSubvention,
-                idCritere: idCritere
-            }),
-            dataType: "JSON",
-            beforeSend: function() {
-                $('#loadingModal').modal('show');
-            },
-            success: function(response) {
-                // console.log("delete critere");
-                // console.log(response);
-                if (response == "1") {
-                    setTimeout(() => {
-                        $('#modalDelete').modal('hide');
-                        $('#loadingModal').modal('hide');
-                    }, 1000);
-
-                    location.reload();
-                }
-
-            },
-            error: function(response) {
-                console.log("ERROR");
-                console.log(response);
-                setTimeout(() => {
-                    $('#loadingModal').modal('hide');
-                }, 1000);
-                $("#msgError").text(
-                    "Erreur de suppression !");
-                $('#errorOperation').modal('show');
-            },
-            complete: function() {
-                setTimeout(() => {
-                    $('#loadingModal').modal('hide');
-                }, 1000);
-            },
-        });
-    }
-
-    //DOCUMENT
-    function onClickImmeuble() {
-        $('#modalImmeuble').modal('show');
-    }
-
-    function saveDocument() {
-        var idSubvention = document.getElementById('idSubvention').value;
-        var docs = document.getElementsByName('checkDoc');
-        let tabDocSub = [];
-        for (let index = 0; index < docs.length; index++) {
-            if (docs[index].checked) {
-                let elt = {
-                    "idSubvention": idSubvention,
-                    "idDocumentRequis": docs[index].value,
-                    "etat": $(".etat" + docs[index].value + ":radio:checked").val()
-                }
-                tabDocSub.push(elt);
-            }
-        }
-
-        $.ajax({
-            url: '<?= URLROOT . "/public/json/subvention.php?action=saveDocumentRequisSubvention" ?>',
-            method: 'POST',
-            data: JSON.stringify(tabDocSub),
-            dataType: "JSON",
-            beforeSend: function() {
-                $('#loadingModal').modal('show');
-            },
-            success: function(response) {
-                console.log("save documents");
-                console.log(response);
-                if (response == "1") {
-                    setTimeout(() => {
-                        $('#modalDocument').modal('hide');
-                        $('#loadingModal').modal('hide');
-                    }, 1000);
-
-                    location.reload();
-                }
-            },
-            error: function(response) {
-                console.log("ERROR");
-                console.log(response);
-                setTimeout(() => {
-                    $('#loadingModal').modal('hide');
-                }, 1000);
-                $("#msgError").text(
-                    "Erreur d'enregistrement !");
-                $('#errorOperation').modal('show');
-            },
-            complete: function() {
-                setTimeout(() => {
-                    $('#loadingModal').modal('hide');
-                }, 1000);
-            },
-        });
-    }
-
-    function onClickDelete(id, type, idCrit = "", index = "") {
-        typeDelete = type;
-        if (typeDelete == 'critere') {
-            idCritere = id
-            $("#textDelete").text(
-                "Voulez-vous supprimer le critére N°" + index + " ?");
-        } else {
-            if (typeDelete == "document") {
-                $("#textDelete").text(
-                    "Voulez-vous supprimer ce document ?");
-                idDocument = id
-            } else {
-                if (typeDelete == "condition") {
-                    $("#textDelete").text(
-                        "Voulez-vous supprimer cette condition du critére N°" + index + " ?");
-                    idCondition = id
-                    idCritere = idCrit
-                }
-            }
-        }
-        $('#modalDelete').modal('show');
-    }
-
-    function confirmDelete() {
-        console.log(typeDelete)
-        if (typeDelete == "critere") {
-            deleteCritere()
-        } else {
-            if (typeDelete == "document") {
-                deleteDocument()
-            } else {
-                if (typeDelete == "condition") {
-                    deleteCondition()
-                }
-            }
-        }
-    }
-
-    function deleteDocument() {
-        var idSubvention = document.getElementById('idSubvention').value;
-        $.ajax({
-            url: '<?= URLROOT . "/public/json/subvention.php?action=deleteDocumentSubvention" ?>',
-            method: 'POST',
-            data: JSON.stringify({
-                idSubvention: idSubvention,
-                idDocumentRequis: idDocument
-            }),
-            dataType: "JSON",
-            beforeSend: function() {
-                $('#loadingModal').modal('show');
-            },
-            success: function(response) {
-                // console.log("delete critere");
-                // console.log(response);
-                if (response == "1") {
-                    setTimeout(() => {
-                        $('#modalDelete').modal('hide');
-                        $('#loadingModal').modal('hide');
-                    }, 1000);
-
-                    location.reload();
-                }
-
-            },
-            error: function(response) {
-                console.log("ERROR");
-                console.log(response);
-                setTimeout(() => {
-                    $('#loadingModal').modal('hide');
-                }, 1000);
-                $("#msgError").text(
-                    "Erreur de suppression !");
-                $('#errorOperation').modal('show');
-            },
-            complete: function() {
-                setTimeout(() => {
-                    $('#loadingModal').modal('hide');
-                }, 1000);
-            },
-        });
-    }
 </script>

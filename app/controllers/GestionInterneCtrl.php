@@ -411,33 +411,33 @@ class GestionInterneCtrl extends Controller
      */
     public function projet($id = '')
     {
-            $projet = false;
-            $nom = "";
-            $description = "";
-            $immeubles= [];
-            $lots = [];
+        $projet = false;
+        $nom = "";
+        $description = "";
+        $immeubles= [];
+        $lots = [];
 
-            $id = $id == '' ? 0 : $id;
-            $allDocuments = [];
-            $immeuble = null;
-            // Tous les immeubles
-            $immeubles = $this->immeubleModel->getAllImmeubles();
-            if ($id != 0 && $id != "") {
-                $projet = $this->projetModel->findProjetByColumnValue("idProjet", $id);
-                $immeuble = $this->immeubleModel->findImmeubleById($projet->idImmeuble);
-                if ($projet) {
-                    $nom =$projet ->nomProjet;
-                    $description =$projet ->descriptionProjet;
-                } else {
-                    $this->redirectToMethod("GestionInterne", "indexProjet");
-                }
+        $id = $id == '' ? 0 : $id;
+        $allDocuments = [];
+        $immeuble = null;
+        // Tous les immeubles
+        $immeubles = $this->immeubleModel->getAllImmeubles();
+        if ($id != 0 && $id != "") {
+            $projet = $this->projetModel->findProjetByColumnValue("idProjet", $id);
+            $immeuble = $this->immeubleModel->findImmeubleById($projet->idImmeuble);
+            if ($projet) {
+                $nom =$projet ->nomProjet;
+                $description =$projet ->descriptionProjet;
+            } else {
+                $this->redirectToMethod("GestionInterne", "indexProjet");
             }
-            $data = [
-                "projet"  => $projet,
-                "immeuble" => $immeuble,
-                "immeubles" => $immeubles
-            ];
-            $this->view('gestionInterne/projet/projet', $data);
+        }
+        $data = [
+            "projet"  => $projet,
+            "immeuble" => $immeuble,
+            "immeubles" => $immeubles
+        ];
+        $this->view('gestionInterne/projet/projet', $data);
     }
 
 
